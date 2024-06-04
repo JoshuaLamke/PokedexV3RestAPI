@@ -50,7 +50,7 @@ functions:
     handler: ./src/cron/cardCron.handler
     events:
       - schedule:
-          rate: cron(* * * * ? *)
+          rate: cron(0 0 * * ? *)
           enabled: true
 resources:
   Resources:

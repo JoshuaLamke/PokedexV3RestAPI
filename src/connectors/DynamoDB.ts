@@ -119,7 +119,7 @@ class DynamoDBConnector {
       }
 
       // Apply delay to adhere to provisioned throughput
-      await this.delay(200); 
+      await this.delay(400); 
     }
   }
 

@@ -29,10 +29,16 @@ export type DynamoDBConnectorOptions = {
 class DynamoDBConnector {
   private tableName: string;
   private DynamoDBClient: DynamoDBClient;
+  private baseDelay: number;
+  private minDelay: number;
+  private maxDelay: number;
   constructor({
     isOffline,
   }: DynamoDBConnectorOptions) {
     this.tableName = process.env.TABLE_NAME!;
+    this.baseDelay = 100;
+    this.minDelay = 100;
+    this.maxDelay = 1500;
     const options: DynamoDBClientConfig = isOffline ? {
       endpoint: 'http://localhost:8000',
       region: 'localhost',
@@ -41,8 +47,12 @@ class DynamoDBConnector {
       ...options,
       retryStrategy: new ConfiguredRetryStrategy(
         5,
-        (attempt: number) => 100 + (100 * attempt)
-      ), // Define backoffs for retry
+        (attempt: number) => {
+          const currentDelay = Math.min(this.baseDelay * Math.pow(2, attempt), this.maxDelay);
+          const jitter = this.minDelay + Math.random() * (currentDelay - this.minDelay);
+          return jitter;
+        }
+      ), // Define backoffs with jitter for retry
     });
   }
 

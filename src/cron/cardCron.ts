@@ -34,6 +34,5 @@ export const handler: Handler = async () => {
     } while(data.results.length);
   } catch(e) {
     console.log("Error: ", e)
-    return;
   }
 }

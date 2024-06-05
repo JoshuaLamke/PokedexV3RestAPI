@@ -45,6 +45,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.474.0",
     "@aws-sdk/util-dynamodb": "^3.476.0",
+    "@smithy/util-retry": "^3.0.0",
     "axios": "^1.7.2",
     "jsonwebtoken": "^9.0.2",
     "lambda-api": "^1.0.3",

@@ -5,6 +5,7 @@ import {
   DeleteItemCommand,
   DeleteItemCommandInput,
   DynamoDBClient, 
+  DynamoDBClientConfig, 
   GetItemCommand, 
   GetItemCommandInput, 
   QueryCommand, 
@@ -14,6 +15,7 @@ import {
   UpdateItemCommand,
   UpdateItemCommandInput
 } from "@aws-sdk/client-dynamodb";
+import { ConfiguredRetryStrategy } from "@smithy/util-retry";
 import {
   convertToAttr,
   marshall,
@@ -31,11 +33,17 @@ class DynamoDBConnector {
     isOffline,
   }: DynamoDBConnectorOptions) {
     this.tableName = process.env.TABLE_NAME!;
-    const options = isOffline ? {
+    const options: DynamoDBClientConfig = isOffline ? {
       endpoint: 'http://localhost:8000',
-      region: 'localhost'
+      region: 'localhost',
     } : {};
-    this.DynamoDBClient = new DynamoDBClient(options);
+    this.DynamoDBClient = new DynamoDBClient({
+      ...options,
+      retryStrategy: new ConfiguredRetryStrategy(
+        5,
+        (attempt: number) => 100 + (100 * attempt)
+      ), // Define backoffs for retry
+    });
   }
 
   async scan() {
@@ -119,7 +127,7 @@ class DynamoDBConnector {
       }
 
       // Apply delay to adhere to provisioned throughput
-      await this.delay(400); 
+      await this.delay(300); 
     }
   }
 

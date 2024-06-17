@@ -20,6 +20,16 @@ const DynamoDB = new DynamoDBConnector({
 });
 
 const api = lambdaAPI();
+api.options("/*", (_req: Request, res: Response) => {
+  // Add CORS headers
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173/');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, Content-Length, X-Requested-With'
+  );
+  res.status(200).send({});
+});
 
 // Get all summary pokemon cards
 api.get("/cards", async (_req: Request, res: Response) => {

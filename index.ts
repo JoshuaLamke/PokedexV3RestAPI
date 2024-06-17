@@ -22,7 +22,7 @@ const DynamoDB = new DynamoDBConnector({
 const api = lambdaAPI();
 api.options("/*", (_req: Request, res: Response) => {
   // Add CORS headers
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173/');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET');
   res.header(
     'Access-Control-Allow-Headers',
